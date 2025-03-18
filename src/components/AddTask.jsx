@@ -1,24 +1,27 @@
 import { useState } from "react";
+import { useTasks, useTasksDispatch } from "../context/TaskContext";
+import { getNextId } from "../utils/getNextId";
 
-export default function AddTask({ onAdd }) {
+export default function AddTask() {
+  const dispatch = useTasksDispatch();
+  const tasks = useTasks();
+
   const [text, setText] = useState("");
-
-  const handleChangeText = (e) => {
-    setText(e.target.value);
-  };
-
   return (
     <>
       <input
-        type="text"
-        value={text}
         placeholder="Add task"
-        onChange={handleChangeText}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
       />
       <button
         onClick={() => {
           setText("");
-          onAdd(text);
+          dispatch({
+            type: "added",
+            text,
+            id: getNextId(tasks),
+          });
         }}
       >
         Add
